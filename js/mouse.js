@@ -1,38 +1,43 @@
-/* Custom mouse effects for Butterfly theme */
+/* Mouse cursor effect - custom cursor that follows the mouse pointer */
 
-// Click effect: ripple + random colored particles
-document.addEventListener('click', function(e) {
-  // Create a ripple effect
-  var ripple = document.createElement('div');
-  ripple.className = 'mouse-ripple';
-  
-  var size = Math.random() * 20 + 10;
-  var colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd'];
-  var color = colors[Math.floor(Math.random() * colors.length)];
-  
-  ripple.style.cssText = 
-    'position:fixed;' +
-    'z-index:9999;' +
-    'pointer-events:none;' +
-    'width:' + size + 'px;' +
-    'height:' + size + 'px;' +
-    'left:' + (e.clientX - size / 2) + 'px;' +
-    'top:' + (e.clientY - size / 2) + 'px;' +
-    'background:' + color + ';' +
-    'border-radius:50%;' +
-    'opacity:0.8;' +
-    'transform:scale(0);' +
-    'animation:rippleEffect 0.6s ease-out forwards;';
-  
-  document.body.appendChild(ripple);
-  setTimeout(function() { ripple.remove(); }, 600);
-});
+(function() {
+    var cursor = document.createElement('div');
+    cursor.id = 'cursor';
+    document.body.appendChild(cursor);
 
-// Add the keyframe animation via a style element
-var style = document.createElement('style');
-style.textContent = 
-  '@keyframes rippleEffect {' +
-  '  0% { transform: scale(0); opacity: 0.8; }' +
-  '  100% { transform: scale(3); opacity: 0; }' +
-  '}';
-document.head.appendChild(style);
+    var mouseX = 0, mouseY = 0;
+
+    document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.transform = 'translate(' + (mouseX - 8) + 'px, ' + (mouseY - 8) + 'px)';
+    });
+
+    // Hide cursor when mouse leaves window
+    document.addEventListener('mouseleave', function() {
+        cursor.classList.add('hidden');
+    });
+
+    document.addEventListener('mouseenter', function() {
+        cursor.classList.remove('hidden');
+    });
+
+    // Hover effect on links and buttons
+    var hoverTargets = document.querySelectorAll('a, button, .clickable, input[type="submit"], input[type="button"]');
+    hoverTargets.forEach(function(target) {
+        target.addEventListener('mouseenter', function() {
+            cursor.classList.add('hover');
+        });
+        target.addEventListener('mouseleave', function() {
+            cursor.classList.remove('hover');
+        });
+    });
+
+    // Active effect on click
+    document.addEventListener('mousedown', function() {
+        cursor.classList.add('active');
+    });
+    document.addEventListener('mouseup', function() {
+        cursor.classList.remove('active');
+    });
+})();
